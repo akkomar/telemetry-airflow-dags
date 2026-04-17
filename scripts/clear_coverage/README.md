@@ -22,6 +22,21 @@ python3 scripts/clear_coverage/analyze_clear_coverage.py
 The first script produces `dags.json` (one entry per parsed DAG file). The second
 reads that and produces `report.md`. Both output files are gitignored.
 
+## Filtering out paused DAGs
+
+Paused-DAG state is runtime metadata (not in the DAG files), so provide it
+yourself. Create `paused_dags.txt` next to the scripts, one `dag_id` per line
+(blank lines and `#`-comments ignored), then re-run the analyzer. The easiest
+source is the Airflow UI's filter, or:
+
+```
+airflow dags list-paused -o plain | awk 'NR>1 {print $1}' > scripts/clear_coverage/paused_dags.txt
+```
+
+When the file is present, the analyzer drops those DAGs from the entries *and*
+prunes sensor/marker edges that point at them, so a paused DAG can't drag a
+live DAG into the impacted set (or vice versa). The file is gitignored.
+
 ## What's in the report
 
 - **Gap DAGs** — DAGs that are transitively impacted by `copy_deduplicate` via sensors

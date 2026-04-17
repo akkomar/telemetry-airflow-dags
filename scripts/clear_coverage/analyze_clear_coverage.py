@@ -33,7 +33,20 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 DAGS_JSON = ROOT / "dags.json"
 REPORT_PATH = ROOT / "report.md"
+PAUSED_FILE = ROOT / "paused_dags.txt"
 START_DAG = "copy_deduplicate"
+
+
+def load_paused() -> set[str]:
+    """Read paused dag_ids, one per line. '#' starts a comment. Missing file = no filter."""
+    if not PAUSED_FILE.exists():
+        return set()
+    out: set[str] = set()
+    for raw in PAUSED_FILE.read_text().splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if line:
+            out.add(line)
+    return out
 
 
 def load() -> list[dict[str, Any]]:
@@ -235,6 +248,17 @@ def _schedule_classification(schedule: Any) -> str:
 
 def main() -> int:
     entries = load()
+    paused = load_paused()
+    if paused:
+        before = len(entries)
+        entries = [e for e in entries if e["dag_id"] not in paused]
+        # Sensors/markers pointing at paused DAGs are pruned too, so they can't
+        # drag a DAG into `impacted` just because a paused DAG sensors into it
+        # or a paused DAG marks into it.
+        for e in entries:
+            e["sensors"] = [s for s in e["sensors"] if s.get("external_dag_id") not in paused]
+            e["markers"] = [m for m in e["markers"] if m.get("external_dag_id") not in paused]
+        print(f"Filtered out {before - len(entries)} paused DAG(s) from {PAUSED_FILE.name}")
     marker_edges, sensor_edges, dag_by_id = build_graphs(entries)
 
     if START_DAG not in dag_by_id:
@@ -325,7 +349,15 @@ def main() -> int:
     lines: list[str] = []
     lines.append(f"# Clear-coverage report for `{START_DAG}`")
     lines.append("")
-    lines.append(f"- Total DAGs parsed: **{len(entries)}**")
+    if paused:
+        lines.append(f"_Filtered out {len(paused)} paused DAG id(s) listed in `{PAUSED_FILE.name}`._")
+        lines.append("")
+    lines.append(f"- Total DAGs analysed (after filter): **{len(entries)}**")
+    if not paused:
+        lines.append(
+            "  _(no paused-DAG filter applied — create `paused_dags.txt` next to the scripts "
+            "with one paused dag_id per line to exclude them)_"
+        )
     lines.append(f"- Transitively impacted by {START_DAG} (via sensors): **{len(impacted)}**")
     lines.append(f"- Reachable by recursive clear (marker+sensor matched): **{len(reachable)}**")
     lines.append(f"- **Gap (impacted − reachable): {len(gap)}**")

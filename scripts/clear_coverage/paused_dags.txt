@@ -1,0 +1,46 @@
+# Paused DAGs in prod Airflow as of 2026-04-17 20:51 UTC.
+# Copied from workflow.telemetry.mozilla.org DAGs view (filter: paused).
+# Showing 1-43 of 43.
+bqetl_addons_moderations
+bqetl_adjust
+bqetl_baseline_active_user_aggregates
+bqetl_braze_add_ons_devs_users
+bqetl_braze_add_ons_sync
+bqetl_braze_monitor_plus_users_sync
+bqetl_default
+bqetl_event_aggregates
+bqetl_fenix_event_rollup
+bqetl_firefox_enterprise
+bqetl_fivetran_copied_tables
+bqetl_github
+bqetl_glam_export
+bqetl_market_intel_bot
+bqetl_mobile_engagement_model
+bqetl_newtab_historical
+bqetl_pocket_user_engagement_historical
+bqetl_pocket_users_historical
+bqetl_reference
+bqetl_release_criteria
+dbt_daily
+eam-gmail-panopto-integration
+eam-workday-docusign-integration
+experiment_auto_sizing
+experiments_live
+fivetran_acoustic_raw_recipient_export
+fivetran_acoustic_suppression_export
+ga4_site_metrics_summary_backfill
+glam_glean_imports
+influxdb_to_bigquery
+ltv_daily
+mad_server
+merino_flightaware_schedules
+mobile_aggregates
+partybal
+peopleintegration-workday-get-report
+peopleteam-monthly
+private_bqetl_google_country_level_tier1
+private_bqetl_native_ad_metrics_hourly
+private_bqetl_people
+private_bqetl_workday_monthly
+search_alert
+search_term_data_validation_v2

@@ -1,9 +1,11 @@
 # Clear-coverage report for `copy_deduplicate`
 
-- Total DAGs parsed: **229**
-- Transitively impacted by copy_deduplicate (via sensors): **111**
-- Reachable by recursive clear (marker+sensor matched): **83**
-- **Gap (impacted − reachable): 28**
+_Filtered out 43 paused DAG id(s) listed in `paused_dags.txt`._
+
+- Total DAGs analysed (after filter): **204**
+- Transitively impacted by copy_deduplicate (via sensors): **106**
+- Reachable by recursive clear (marker+sensor matched): **81**
+- **Gap (impacted − reachable): 25**
 
 ## Gap DAGs (logically depend on copy_deduplicate but clear won't reach them)
 
@@ -11,7 +13,6 @@
 |---|---|---|---|---|---|
 | `bqetl_mozilla_vpn_site_metrics` | daily (`0 15 * * *`) | `bqetl_google_analytics_derived_ga4` | `bqetl_mozilla_vpn_site_metrics` | missing_marker_on_upstream | bqetl_google_analytics_derived_ga4 has no ExternalTaskMarker targeting bqetl_mozilla_vpn_site_metrics |
 | `probe_scraper` | daily (`0 0 * * *`) | `bqetl_monitoring` | `probe_scraper` | missing_marker_on_upstream | bqetl_monitoring has no ExternalTaskMarker targeting probe_scraper |
-| `search_alert` | daily (`0 4 * * *`) | `bqetl_search` | `search_alert` | missing_marker_on_upstream | bqetl_search has no ExternalTaskMarker targeting search_alert |
 | `search_forecasting` | monthly (`30 5 7 * *`) | `bqetl_search_dashboard` | `search_forecasting` | missing_marker_on_upstream | bqetl_search_dashboard has no ExternalTaskMarker targeting search_forecasting |
 | `adm_dma_export` | daily (`0 8 * * *`) | `bqetl_search_terms_daily` | `adm_dma_export` | missing_marker_on_upstream | bqetl_search_terms_daily has no ExternalTaskMarker targeting adm_dma_export |
 | `adm_export` | daily (`0 8 * * *`) | `bqetl_search_terms_daily` | `adm_export` | missing_marker_on_upstream | bqetl_search_terms_daily has no ExternalTaskMarker targeting adm_export |
@@ -22,21 +23,19 @@
 | `bqetl_crashes` | daily (`0 4 * * *`) | `copy_deduplicate` | `bqetl_crashes` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_crashes |
 | `bqetl_desktop_installs_v1` | daily (`55 23 * * *`) | `copy_deduplicate` | `bqetl_desktop_installs_v1` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_desktop_installs_v1 |
 | `bqetl_firefox_installer_aggregates` | daily (`0 15 * * *`) | `copy_deduplicate` | `bqetl_firefox_installer_aggregates` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_firefox_installer_aggregates |
-| `bqetl_glam_refresh_aggregates` | daily (`0 8 * * *`) | `copy_deduplicate` | `glam_fog` | sensor_task_id_mismatch | copy_deduplicate marker external_task_ids=['wait_for_copy_deduplicate_all'] but glam_fog sensor task_ids (against copy_deduplicate)=['wait_for_copy_deduplicate'] |
-| `bqetl_glam_refresh_aggregates_release` | weekly (`0 18 * * 6`) | `copy_deduplicate` | `glam_fog` | sensor_task_id_mismatch | copy_deduplicate marker external_task_ids=['wait_for_copy_deduplicate_all'] but glam_fog sensor task_ids (against copy_deduplicate)=['wait_for_copy_deduplicate'] |
+| `bqetl_glam_refresh_aggregates` | daily (`0 8 * * *`) | `copy_deduplicate` | `glam_fenix` | sensor_task_id_mismatch | copy_deduplicate marker external_task_ids=['wait_for_copy_deduplicate_all'] but glam_fenix sensor task_ids (against copy_deduplicate)=['wait_for_copy_deduplicate'] |
+| `bqetl_glam_refresh_aggregates_release` | weekly (`0 18 * * 6`) | `copy_deduplicate` | `glam_fenix` | sensor_task_id_mismatch | copy_deduplicate marker external_task_ids=['wait_for_copy_deduplicate_all'] but glam_fenix sensor task_ids (against copy_deduplicate)=['wait_for_copy_deduplicate'] |
 | `bqetl_pageload_v1` | daily (`@daily`) | `copy_deduplicate` | `bqetl_pageload_v1` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_pageload_v1 |
 | `bqetl_pocket` | daily (`0 12 * * *`) | `copy_deduplicate` | `bqetl_pocket` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_pocket |
 | `bqetl_rust_component_metrics` | daily (`0 3 * * *`) | `copy_deduplicate` | `bqetl_rust_component_metrics` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_rust_component_metrics |
 | `bqetl_serp` | daily (`@daily`) | `copy_deduplicate` | `bqetl_serp` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_serp |
 | `bqetl_usage_reporting` | daily (`0 4 * * *`) | `copy_deduplicate` | `bqetl_usage_reporting` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_usage_reporting |
 | `bqetl_use_counter_analysis` | daily (`0 8 * * *`) | `copy_deduplicate` | `bqetl_use_counter_analysis` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting bqetl_use_counter_analysis |
-| `dbt_daily` | weekly (`0 4 * * 0`) | `copy_deduplicate` | `dbt_daily` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting dbt_daily |
 | `firefox_public_data_report` | weekly (`0 1 * * MON`) | `copy_deduplicate` | `firefox_public_data_report` | missing_marker_on_upstream | copy_deduplicate has no ExternalTaskMarker targeting firefox_public_data_report |
 | `glam_fenix` | daily (`0 2 * * *`) | `copy_deduplicate` | `glam_fenix` | sensor_task_id_mismatch | copy_deduplicate marker external_task_ids=['wait_for_copy_deduplicate_all'] but glam_fenix sensor task_ids (against copy_deduplicate)=['wait_for_copy_deduplicate'] |
 | `glam_fenix_release` | weekly (`0 10 * * 6`) | `copy_deduplicate` | `glam_fenix` | sensor_task_id_mismatch | copy_deduplicate marker external_task_ids=['wait_for_copy_deduplicate_all'] but glam_fenix sensor task_ids (against copy_deduplicate)=['wait_for_copy_deduplicate'] |
 | `glam_fog` | daily (`0 2 * * *`) | `copy_deduplicate` | `glam_fog` | sensor_task_id_mismatch | copy_deduplicate marker external_task_ids=['wait_for_copy_deduplicate_all'] but glam_fog sensor task_ids (against copy_deduplicate)=['wait_for_copy_deduplicate'] |
 | `glam_fog_release` | weekly (`0 10 * * 6`) | `copy_deduplicate` | `glam_fog` | sensor_task_id_mismatch | copy_deduplicate marker external_task_ids=['wait_for_copy_deduplicate_all'] but glam_fog sensor task_ids (against copy_deduplicate)=['wait_for_copy_deduplicate'] |
-| `experiment_auto_sizing` | weekly (`0 6 * * 0`) | `jetstream` | `experiment_auto_sizing` | missing_marker_on_upstream | jetstream has no ExternalTaskMarker targeting experiment_auto_sizing |
 
 ## Direct sensors on copy_deduplicate that are NOT in its marker sets
 
@@ -58,7 +57,6 @@ These DAGs have an `ExternalTaskSensor` pointing at `copy_deduplicate`, but `cop
 | `bqetl_desktop_engagement_model` | `bigquery-etl/dags/bqetl_desktop_engagement_model.py` | `0 5 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate_all` |
 | `bqetl_desktop_installs_v1` | `bigquery-etl/dags/bqetl_desktop_installs_v1.py` | `55 23 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate_all` |
 | `bqetl_ech_adoption_rate` | `bigquery-etl/dags/bqetl_ech_adoption_rate.py` | `@daily` | `wait_for_copy_deduplicate_all` | `copy_deduplicate_all` |
-| `bqetl_firefox_enterprise` | `bigquery-etl/dags/bqetl_firefox_enterprise.py` | `0 6 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate_all` |
 | `bqetl_firefox_installer_aggregates` | `bigquery-etl/dags/bqetl_firefox_installer_aggregates.py` | `0 15 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate_all` |
 | `bqetl_fx_cert_error_privacy_dashboard` | `bigquery-etl/dags/bqetl_fx_cert_error_privacy_dashboard.py` | `40 16 * * *` | `wait_for_bq_main_events` | `bq_main_events` |
 | `bqetl_fx_cert_error_privacy_dashboard` | `bigquery-etl/dags/bqetl_fx_cert_error_privacy_dashboard.py` | `40 16 * * *` | `wait_for_event_events` | `event_events` |
@@ -86,7 +84,6 @@ These DAGs have an `ExternalTaskSensor` pointing at `copy_deduplicate`, but `cop
 | `bqetl_use_counter_analysis` | `bigquery-etl/dags/bqetl_use_counter_analysis.py` | `0 8 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate_all` |
 | `catalyst` | `telemetry-airflow/dags/catalyst.py` | `0 4 * * *` | `wait_for_bq_main_events` | `bq_main_events` |
 | `catalyst` | `telemetry-airflow/dags/catalyst.py` | `0 4 * * *` | `wait_for_event_events` | `event_events` |
-| `dbt_daily` | `telemetry-airflow/dags/dbt_daily.py` | `0 4 * * 0` | `wait_for_copy_deduplicate` | `copy_deduplicate_all` |
 | `firefox_public_data_report` | `telemetry-airflow/dags/firefox_public_data_report.py` | `0 1 * * MON` | `wait_for_main_ping` | `copy_deduplicate_main_ping` |
 | `glam_fenix` | `telemetry-airflow/dags/glam_fenix.py` | `0 2 * * *` | `wait_for_copy_deduplicate` | `copy_deduplicate_all` |
 | `glam_fog` | `telemetry-airflow/dags/glam_fog.py` | `0 2 * * *` | `wait_for_copy_deduplicate` | `copy_deduplicate_all` |
@@ -102,7 +99,6 @@ These are sensor tasks *inside* reachable DAGs whose upstream DAG does not publi
 | `firefox_public_data_report` | `0 1 * * MON` | `wait_for_clients_last_seen` | `bqetl_main_summary` | `telemetry_derived__clients_last_seen__v1` | **YES** |
 | `probe_scraper` | `0 0 * * *` | `wait_for_table_partition_expirations` | `bqetl_monitoring` | `monitoring_derived__table_partition_expirations__v1` | **YES** |
 | `catalyst` | `0 4 * * *` | `wait_for_search_clients_daily` | `bqetl_search` | `search_derived__search_clients_daily__v8` | no |
-| `search_alert` | `0 4 * * *` | `wait_for_search_aggregates` | `bqetl_search` | `search_derived__search_aggregates__v8` | **YES** |
 | `search_forecasting` | `30 5 7 * *` | `wait_for_search_dashboard` | `bqetl_search_dashboard` | `search_derived__search_revenue_levers_daily__v1` | **YES** |
 | `adm_dma_export` | `0 8 * * *` | `wait_for_adm_daily_dma_aggregates` | `bqetl_search_terms_daily` | `search_terms_derived__adm_daily_dma_aggregates__v1` | **YES** |
 | `adm_export` | `0 8 * * *` | `wait_for_adm_daily_aggregates` | `bqetl_search_terms_daily` | `search_terms_derived__adm_daily_aggregates__v1` | **YES** |
@@ -120,7 +116,6 @@ These are sensor tasks *inside* reachable DAGs whose upstream DAG does not publi
 | `bqetl_desktop_engagement_model` | `0 5 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate` | `copy_deduplicate_all` | no |
 | `bqetl_desktop_installs_v1` | `55 23 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate` | `copy_deduplicate_all` | **YES** |
 | `bqetl_ech_adoption_rate` | `@daily` | `wait_for_copy_deduplicate_all` | `copy_deduplicate` | `copy_deduplicate_all` | no |
-| `bqetl_firefox_enterprise` | `0 6 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate` | `copy_deduplicate_all` | no |
 | `bqetl_firefox_installer_aggregates` | `0 15 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate` | `copy_deduplicate_all` | **YES** |
 | `bqetl_fx_cert_error_privacy_dashboard` | `40 16 * * *` | `wait_for_bq_main_events` | `copy_deduplicate` | `bq_main_events` | no |
 | `bqetl_fx_cert_error_privacy_dashboard` | `40 16 * * *` | `wait_for_event_events` | `copy_deduplicate` | `event_events` | no |
@@ -148,12 +143,10 @@ These are sensor tasks *inside* reachable DAGs whose upstream DAG does not publi
 | `bqetl_use_counter_analysis` | `0 8 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate` | `copy_deduplicate_all` | **YES** |
 | `catalyst` | `0 4 * * *` | `wait_for_bq_main_events` | `copy_deduplicate` | `bq_main_events` | no |
 | `catalyst` | `0 4 * * *` | `wait_for_event_events` | `copy_deduplicate` | `event_events` | no |
-| `dbt_daily` | `0 4 * * 0` | `wait_for_copy_deduplicate` | `copy_deduplicate` | `copy_deduplicate_all` | **YES** |
 | `firefox_public_data_report` | `0 1 * * MON` | `wait_for_main_ping` | `copy_deduplicate` | `copy_deduplicate_main_ping` | **YES** |
 | `glam_fenix` | `0 2 * * *` | `wait_for_copy_deduplicate` | `copy_deduplicate` | `copy_deduplicate_all` | **YES** |
 | `glam_fog` | `0 2 * * *` | `wait_for_copy_deduplicate` | `copy_deduplicate` | `copy_deduplicate_all` | **YES** |
 | `private_bqetl_ads` | `0 4 * * *` | `wait_for_copy_deduplicate_all` | `copy_deduplicate` | `copy_deduplicate_all` | no |
-| `experiment_auto_sizing` | `0 6 * * 0` | `wait_for_jetstream` | `jetstream` | `jetstream_run_config_changed` | **YES** |
 
 ## Non-daily DAGs in the impacted set
 
@@ -166,8 +159,6 @@ copy_deduplicate runs daily. Downstream DAGs on non-daily schedules (hourly, wee
 | `bqetl_desktop_mobile_search_monthly` | `0 5 2 * *` | monthly | no |
 | `bqetl_glam_refresh_aggregates_release` | `0 18 * * 6` | weekly | **YES** |
 | `bqetl_shredder_impact_measurement` | `40 12 * * 7` | weekly | no |
-| `dbt_daily` | `0 4 * * 0` | weekly | **YES** |
-| `experiment_auto_sizing` | `0 6 * * 0` | weekly | **YES** |
 | `firefox_public_data_report` | `0 1 * * MON` | weekly | **YES** |
 | `glam_fenix_release` | `0 10 * * 6` | weekly | **YES** |
 | `glam_fog_release` | `0 10 * * 6` | weekly | **YES** |
