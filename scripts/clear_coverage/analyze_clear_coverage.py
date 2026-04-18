@@ -24,17 +24,71 @@ Output: report.md next to this script.
 
 from __future__ import annotations
 
+import datetime as _dt
 import json
+import re
+import subprocess
 from collections import defaultdict, deque
 from pathlib import Path
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parent
+REPO_ROOT = ROOT.parents[1]
 DAGS_JSON = ROOT / "dags.json"
 REPORT_PATH = ROOT / "report.md"
 PAUSED_FILE = ROOT / "paused_dags.txt"
 START_DAG = "copy_deduplicate"
+
+
+def _collect_provenance() -> list[dict[str, str]]:
+    """Read each git submodule's current commit + GitHub URL for the report banner.
+
+    Returns one entry per submodule: {path, url, sha, short_sha, commit_url}.
+    If the superproject isn't a git checkout, returns an empty list.
+    """
+    try:
+        status = subprocess.check_output(
+            ["git", "submodule", "status"], cwd=REPO_ROOT, text=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return []
+
+    entries: list[dict[str, str]] = []
+    for line in status.splitlines():
+        # Format: " <sha> <path> (describe)" — leading char is ' ', '+', '-', or 'U'.
+        m = re.match(r"^[ +\-U]?([0-9a-f]{40})\s+(\S+)", line)
+        if not m:
+            continue
+        sha, path = m.group(1), m.group(2)
+        try:
+            url = subprocess.check_output(
+                ["git", "config", "--file", ".gitmodules",
+                 "--get", f"submodule.{path}.url"],
+                cwd=REPO_ROOT, text=True,
+            ).strip()
+        except subprocess.CalledProcessError:
+            url = ""
+        commit_url = _github_commit_url(url, sha)
+        entries.append({
+            "path": path,
+            "url": url,
+            "sha": sha,
+            "short_sha": sha[:7],
+            "commit_url": commit_url,
+        })
+    entries.sort(key=lambda e: e["path"])
+    return entries
+
+
+def _github_commit_url(url: str, sha: str) -> str:
+    """Best-effort convert an ssh/https git URL to https://github.com/<owner>/<repo>/commit/<sha>."""
+    if not url:
+        return ""
+    m = re.match(r"(?:git@|https?://)github\.com[:/](?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?$", url)
+    if not m:
+        return ""
+    return f"https://github.com/{m.group('owner')}/{m.group('repo')}/commit/{sha}"
 
 
 def load_paused() -> set[str]:
@@ -348,6 +402,18 @@ def main() -> int:
     # -------------------- Render report.md --------------------
     lines: list[str] = []
     lines.append(f"# Clear-coverage report for `{START_DAG}`")
+    lines.append("")
+    now = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    lines.append(f"_Generated {now}._")
+    provenance = _collect_provenance()
+    if provenance:
+        lines.append("")
+        lines.append("Source checkouts:")
+        for p in provenance:
+            if p["commit_url"]:
+                lines.append(f"- `{p['path']}` @ [`{p['short_sha']}`]({p['commit_url']})")
+            else:
+                lines.append(f"- `{p['path']}` @ `{p['short_sha']}`")
     lines.append("")
     if paused:
         lines.append(f"_Filtered out {len(paused)} paused DAG id(s) listed in `{PAUSED_FILE.name}`._")
